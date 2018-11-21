@@ -5,7 +5,65 @@ date: "November 21, 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = FALSE}
+
+library(tidyverse)
+
+```
+
+```{r, include = FALSE}
+
+salmon <- read_csv("salmon.csv")
+
+```
+
+#### Exploratory Graph
+
+```{r, echo = FALSE}
+
+# Exploratory graph
+
+salmon_scatter <- ggplot(salmon, aes(x = Year, y = Salmon_vol)) +
+  geom_point()
+salmon_scatter
+
+# Overall the data looks linear. There are some outliers that fall outside of linear, but I think a linear regression is ok
+
+```
+
+#### Linear Regression
+
+```{r, echo = FALSE}
+
+# Liner regression in R
+
+salmon_model <- lm(Salmon_vol ~ Year, data = salmon)
+salmon_model
+
+# Import(tons) = 7550(Year) - 14982940
+
+# Slope: About 7550 tons of salmon are imported per year
+# y-int: About -14982940 tons of salmons was imported in year 0. This is concerning because at a certain x year, the imports will start being negative.
+
+```
+
+Import(tons) = 7550(Year) - 14982940
+
+Slope: About 7550 tons of salmon are imported per year
+
+y-int: About -14982940 tons of salmons was imported in year 0. This is concerning because at a certain x year, the imports will start being negative.
+
+#### Model Diagnostics
+
+```{r, echo = FALSE}
+
+# Model diagnostics
+
+plot(salmon_model)
+
 ```
 
