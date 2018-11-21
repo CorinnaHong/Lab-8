@@ -21,7 +21,7 @@ salmon <- read_csv("salmon.csv")
 
 ```
 
-#### Exploratory Graph
+### Exploratory Graph
 
 ```{r, echo = FALSE}
 
@@ -35,7 +35,7 @@ salmon_scatter
 
 ```
 
-#### Linear Regression
+### Linear Regression
 
 ```{r, echo = FALSE}
 
@@ -44,26 +44,50 @@ salmon_scatter
 salmon_model <- lm(Salmon_vol ~ Year, data = salmon)
 salmon_model
 
-# Import(tons) = 7550(Year) - 14982940
-
-# Slope: About 7550 tons of salmon are imported per year
-# y-int: About -14982940 tons of salmons was imported in year 0. This is concerning because at a certain x year, the imports will start being negative.
-
 ```
 
-Import(tons) = 7550(Year) - 14982940
+Import = 7550*(Year) - 14982940 tons
 
 Slope: About 7550 tons of salmon are imported per year
 
 y-int: About -14982940 tons of salmons was imported in year 0. This is concerning because at a certain x year, the imports will start being negative.
 
-#### Model Diagnostics
+### Model Diagnostics
 
 ```{r, echo = FALSE}
 
 # Model diagnostics
 
+par(mfrow = c(2,2))
 plot(salmon_model)
+
+```
+
+Residuals look normally distributed with a few outliers, but they are not enough to cause concern about violating homoscedasticity
+
+### Model fit and significance
+
+```{r, include = FALSE}
+
+# Detailed model information
+
+summary(salmon_model)
+
+```
+
+R^2^ = 0.9478, p for model fit < 0.001
+
+Basd on this model, year significanly predicts salmon imports. R^2^ is the proportion of the variance in salmon imports that is explained by year. 95% of variance in salmon imports is predictable by year and 15% of variance in salmong imports is not predictable by year.
+
+### Final graph
+
+```{r}
+
+salmon_final_graph <- ggplot(salmon, aes (x = Year, y = Salmon_vol)) +
+  geom_point() +
+  geom_smooth(method = lm, se = TRUE, size = 0.5, color = "grey20") +
+  theme_classic()
+salmon_final_graph
 
 ```
 
