@@ -37,7 +37,7 @@ salmon_scatter
 
 ### Linear Regression
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, include = FALSE}
 
 # Liner regression in R
 
@@ -46,7 +46,7 @@ salmon_model
 
 ```
 
-Import = 7550*(Year) - 14982940 tons
+U.S. Annual Import = 7550*(Year) - 14982940 tons
 
 Slope: About 7550 tons of salmon are imported per year
 
@@ -81,13 +81,53 @@ Basd on this model, year significanly predicts salmon imports. R^2^ is the propo
 
 ### Final graph
 
-```{r}
+```{r, echo = FALSE}
 
 salmon_final_graph <- ggplot(salmon, aes (x = Year, y = Salmon_vol)) +
   geom_point() +
-  geom_smooth(method = lm, se = TRUE, size = 0.5, color = "grey20") +
-  theme_classic()
+  geom_smooth(method = lm, size = 0.5, color = "grey30") + # 95% CI default, se = true default (puts CI around smooth)
+  theme_classic() +
+  scale_x_continuous(expand = c(0,0), limits = c(1990, 2017)) +
+  labs(x = "Year", y = "U.S. Annual Salmon Imports\n(1,000 pounds)")
 salmon_final_graph
 
 ```
 
+### Predictions using model
+
+```{r, echo = FALSE}
+
+# New data frame containing years we want to predict for
+
+new_years <- data.frame(Year = c(2022, 2024, 2026, 2028))
+
+
+# Feed new data frame into predict() function
+
+future_predict <- predict(salmon_model, newdata = new_years, interval = "confidence") # interval = "confidence" to report lower and upper bounds of 95% CI.
+
+
+# merge them into one df
+
+predictions <- data.frame(new_years, future_predict)
+predictions
+
+```
+
+### Pearson's *r*
+
+```{r, include = FALSE}
+
+# H0: Correlation equals 0
+# HA: Correlation does not equal 0
+
+salmon_pearsons <- cor.test(salmon$Year, salmon$Salmon_vol)
+salmon_pearsons
+
+```
+
+t(26) = 21.723, p < 0.001. Reject the null. Correlation equals 0.97, which is a strong positive correlation.
+
+### Final statement
+
+Year significantly predicts U.S. annual import of salmon (*b* = 7550, t(`r salmon_pearsons$parameter`) = `r round(salmon_pearsons$statistic, 2)`, *p* < 0.001) with a strong positive correlation between the two (Pearson's *r* = `r round(salmon_pearsons$estimate, 2)`). The overall model (Imports = 7550(year) - 14982940, imports measured in tons) explains a significant amount of variance in U.S. imports (F(1,26) = 471.9, *p* < 0.001, R^2^ = 0.9478).
